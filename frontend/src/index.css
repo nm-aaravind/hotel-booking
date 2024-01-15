@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@media (prefers-reduced-motion: no-preference){
+    .hero-animation{
+        animation: fade-in linear forwards;
+        animation-timeline: view();
+        animation-range: exit 150px;
+    }
+    @keyframes fade-in {
+        25% {
+            opacity: 1
+        }
+        85%, 100% {
+            opacity: 0;
+        }
+    }
+}

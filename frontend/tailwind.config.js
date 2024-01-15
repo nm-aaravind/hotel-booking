@@ -7,6 +7,12 @@ export default {
         raleway: ['"Raleway"', "sans-serif"],
         libre: ['"Libre Franklin"', 'sans-serif']
       },
+      backgroundImage: {
+        hero: "url('./src/assets/hero.jpg')",
+      },
+      boxShadow:{
+        hero: '0 0 250px black inset'
+      } 
     },
   },
   plugins: [],
