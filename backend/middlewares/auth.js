@@ -1,25 +1,7 @@
 import { checkSchema, validationResult } from 'express-validator'
-export const registerSchema = {
-    email: {
-        isEmail: {
-            errorMessage: "Must be valid email"
-        }
-    },
-    firstName: {
-        isString: true
-    },
-    lastName: {
-        isString: true
-    },
-    password: {
-        isLength: {
-            options: { min: 5 },
-            errorMessage: "Password should be atleast 5 characters"
-        }
-    }
-}
+import jwt from 'jsonwebtoken'
 
-async function signUpValidation(req, res, next) {
+export async function signUpValidation(req, res, next) {
     await checkSchema({
         email: { exists: { errorMessage: "Email is required", bail: true }, isEmail: true },
         password: { exists: { errorMessage: "Password is required", bail: true }, isLength: { options: { min: 5 }, errorMessage: "Password should be atleast 5 characters long" } },
@@ -35,7 +17,7 @@ async function signUpValidation(req, res, next) {
     next()
 }
 
-async function loginValidation(req, res, next) {
+export async function loginValidation(req, res, next) {
     await checkSchema({
         email: { exists: { errorMessage: "Email is required", bail: true }, isEmail: true },
         password: { exists: { errorMessage: "Password is required", bail: true }, isLength: { options: { min: 5 }, errorMessage: "Password should be atleast 5 characters long" } }
@@ -48,6 +30,23 @@ async function loginValidation(req, res, next) {
     }
     next()
 }
-export {
-    signUpValidation, loginValidation
+
+export async function verifyToken(req, res, next){
+    const token = req.cookies['auth-token'];
+    if(!token){
+        return res.status(401).json({
+            message: "Unauthorized"
+        })
+    }
+    try {
+        const checkToken = jwt.verify(token, process.env.JWT_KEY);
+        req.userId = checkToken.userId;
+        next();
+    } catch (error) {
+        console.log(error)
+        return res.status(401).json({
+            message: "Unauthorized"
+        })
+    }
 }
+

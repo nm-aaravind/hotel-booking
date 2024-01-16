@@ -2,12 +2,11 @@ import express from 'express'
 import User from '../models/user.js';
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import { signUpValidation, loginValidation } from '../../middlewares/auth.js';
+import { signUpValidation, loginValidation, verifyToken } from '../../middlewares/auth.js';
 const router = express.Router();
 
 router.post('/register',signUpValidation ,async (req, res) => {
     try {
-        console.log("DEI")
         let user = await User.findOne({
             email: req.body.email
         })
@@ -31,7 +30,9 @@ router.post('/register',signUpValidation ,async (req, res) => {
             secure: process.env.NODE_ENV === 'production',
             maxAge: 86400000
         })
-        return res.sendStatus(200);
+        return res.status(200).json({
+            message: "User registered"
+        });
     } catch (error) {
         console.log(error);
         res.status(500).send({
@@ -79,5 +80,11 @@ router.post('/login' , loginValidation, async (req, res) => {
             message: "Something went wrong"
         })
     }
+})
+
+router.get('/test', verifyToken, async (req, res) => {
+    return res.status(200).json({
+        message: "Verified token"
+    })
 })
 export default router;

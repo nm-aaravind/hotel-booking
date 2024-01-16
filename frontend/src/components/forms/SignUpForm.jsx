@@ -1,16 +1,32 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-
+import { useMutation } from 'react-query'
+import * as apiClient from "../../../api/api.js"
+import { useAppContext } from "../../../context/AppContext.jsx";
 function SignUpForm({ toggleModalVisible }) {
+
+  const { showToast } = useAppContext()
+
   const { register, handleSubmit, formState, reset } = useForm({
     mode: "onChange",
   });
-  const { errors } = formState;
-  const navigate = useNavigate();
+
+  const { mutate:registerUser } = useMutation({
+    mutationFn: apiClient.register,
+    onSuccess: (data) => {
+      showToast({ message: data.message, type: "SUCCESS" })
+      toggleModalVisible(false)
+      console.log("Registration successful from mutation ", data)
+    },
+    onError: (error) => {
+      showToast({ message: error.message, type: "ERROR" })
+      console.log("Error shown from mutation ", error)
+    }
+  })
 
   async function formSubmit(data) {
-    console.log(data);
+    registerUser(data)
   }
   return (
     <form

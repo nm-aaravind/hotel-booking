@@ -6,6 +6,8 @@ import Footer from '../components/Footer'
 import ModalWrapper from '../components/ModalWrapper'
 import SignUpForm from '../components/forms/SignUpForm'
 import SignInForm from '../components/forms/SignInForm'
+import { Flip, ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 const Layout = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -25,6 +27,7 @@ const Layout = () => {
             modalVisible === 'signin' ? <SignInForm /> : <SignUpForm />
           }
         </ModalWrapper>
+        <ToastContainer hideProgressBar={true} draggable autoClose={4000}  transition={Flip} toastStyle={{ fontFamily: 'Raleway', fontSize:'1.4rem'}}/>
     </div>
   )
 }
